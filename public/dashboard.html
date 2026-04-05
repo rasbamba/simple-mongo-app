@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background: #007bff;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .logout {
+      background: #28a745;
+    }
+
+    .logout:hover {
+      background: #218838;
+    }
+
+    .delete {
+      background: #dc3545;
+    }
+
+    .delete:hover {
+      background: #c82333;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <span>Dashboard</span>
+</div>
+
+<div class="container">
+  <div class="card">
+
+    <h2>Welcome 👋</h2>
+    <p id="welcome"></p>
+
+    <button class="logout" onclick="logout()">Logout</button>
+    <button class="delete" onclick="deleteAccount()">Delete Account</button>
+
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+// protect page
+if (!token) {
+  window.location.href = "/";
+} else {
+  document.getElementById("welcome").innerText =
+    "You are logged in successfully!";
+}
+
+// logout
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "/";
+}
+
+// delete account
+function deleteAccount() {
+  if (!confirm("Are you sure?")) return;
+
+  fetch("/delete-account", {
+    method: "DELETE",
+    headers: {
+      Authorization: localStorage.getItem("token")
+    }
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  });
+}
+</script>
+
+</body>
+</html>
