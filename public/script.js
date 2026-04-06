@@ -25,10 +25,35 @@ function send() {
   const email = document.getElementById("email").value;
   const pswd = document.getElementById("pswd").value;
 
-  // ✅ VALIDATION HERE
+  // ✅ VALIDATION
   if (!name || !email || !pswd) {
     return alert("Please fill all fields");
   }
+
+  // ✅ FETCH
+  fetch("/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, age, email, pswd })
+  })
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("msg").innerText = data;
+
+    if (data.includes("Saved")) {
+      alert("Signup successful! Please login.");
+
+      // clear fields
+      document.getElementById("name").value = "";
+      document.getElementById("age").value = "";
+      document.getElementById("pswd").value = "";
+      document.getElementById("email").value = "";
+
+      // switch to login
+      showLogin();
+    }
+  });
+}
 
   // only runs if validation passes
   fetch("/add", {
