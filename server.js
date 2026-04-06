@@ -2,12 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
+const cookieParser = require("cookie-parser"); // ✅ import
 
-const app = express();
+const app = express(); // ✅ CREATE APP FIRST
+
 app.use(express.json());
 app.use(express.static("public"));
+app.use(cookieParser()); // ✅ THEN use it
 
 const SECRET = process.env.SECRET;
 
