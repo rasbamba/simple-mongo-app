@@ -2,23 +2,29 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser"); // ✅ import
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
-const app = express(); // ✅ CREATE APP FIRST
+const app = express();
 
+// ✅ MIDDLEWARE (correct order)
 app.use(express.json());
 app.use(express.static("public"));
-app.use(cookieParser()); // ✅ THEN use it
+app.use(cookieParser());
+
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 
 const SECRET = process.env.SECRET;
 
-// connect MongoDB
+// ✅ CONNECT DATABASE
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-
-// MODEL
+// ✅ MODEL
 const User = mongoose.model("User", {
   name: String,
   age: Number,
@@ -26,23 +32,20 @@ const User = mongoose.model("User", {
   pswd: String
 });
 
-
-
-// 🔐 AUTH MIDDLEWARE (define BEFORE using)
+// 🔐 AUTH MIDDLEWARE
 function auth(req, res, next) {
   const token = req.cookies.token;
 
-  if (!token) return res.send("No token");
+  if (!token) return res.status(401).send("No token");
 
   try {
     const decoded = jwt.verify(token, SECRET);
     req.user = decoded;
     next();
   } catch {
-    res.send("Invalid token");
+    res.status(401).send("Invalid token");
   }
 }
-
 
 // ➕ REGISTER
 app.post("/add", async (req, res) => {
@@ -51,7 +54,7 @@ app.post("/add", async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.send("Email already registered!");
+      return res.json({ message: "Email already registered!" });
     }
 
     const hashedPassword = await bcrypt.hash(pswd, 10);
@@ -65,11 +68,11 @@ app.post("/add", async (req, res) => {
 
     await user.save();
     res.json({ message: "Saved securely" });
+
   } catch (err) {
-    res.send("Error saving user");
+    res.json({ message: "Error saving user" });
   }
 });
-
 
 // 🔐 LOGIN
 app.post("/login", async (req, res) => {
@@ -84,25 +87,21 @@ app.post("/login", async (req, res) => {
   const token = jwt.sign({ email: user.email }, SECRET);
 
   res.cookie("token", token, {
-  httpOnly: true,
-  secure: true, // keep true on Render (HTTPS)
-  sameSite: "strict"
+    httpOnly: true,
+    secure: true,       // ✅ required for Render (HTTPS)
+    sameSite: "strict"
+  });
+
+  res.json({ message: "Login successful" });
 });
 
-
-//LOGOUT ROUT
-app.post("/logout" , (req, res) => {
-    res.clearCookies("token");
-    res.send("Logged out");
+// 🚪 LOGOUT
+app.post("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.send("Logged out");
 });
 
-
-
-res.json({ message: "Login successful" });
-});
-
-
-// 🔁 RESET PASSWORD (basic version)
+// 🔁 RESET PASSWORD
 app.post("/reset-password", async (req, res) => {
   const { email, newPassword } = req.body;
 
@@ -117,13 +116,11 @@ app.post("/reset-password", async (req, res) => {
   res.send("Password updated!");
 });
 
-
 // 👤 GET USERS (PROTECTED)
 app.get("/users", auth, async (req, res) => {
   const users = await User.find().select("-pswd");
   res.json(users);
 });
-
 
 // ❌ DELETE USER
 app.delete("/delete/:id", async (req, res) => {
@@ -131,16 +128,13 @@ app.delete("/delete/:id", async (req, res) => {
   res.send("Deleted!");
 });
 
-
 // 🧨 DELETE ACCOUNT (SECURE)
 app.delete("/delete-account", auth, async (req, res) => {
   const email = req.user.email;
 
   await User.findOneAndDelete({ email });
-
   res.send("Account deleted!");
 });
-
 
 // 🚀 START SERVER
 const PORT = process.env.PORT || 3000;
