@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static("public"));
 
-const SECRET = "mysecretkey";
+const SECRET = process.env.SECRET;
 
 // connect MongoDB
 mongoose.connect(process.env.MONGO_URL)
