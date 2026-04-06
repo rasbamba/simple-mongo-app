@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 
 const app = express();
 app.use(express.json());
@@ -27,7 +29,7 @@ const User = mongoose.model("User", {
 
 // 🔐 AUTH MIDDLEWARE (define BEFORE using)
 function auth(req, res, next) {
-  const token = req.headers.authorization;
+  const token = req.cookies.token;
 
   if (!token) return res.send("No token");
 
@@ -80,7 +82,22 @@ app.post("/login", async (req, res) => {
 
   const token = jwt.sign({ email: user.email }, SECRET);
 
-  res.json({ message: "Login successful", token });
+  res.cookie("token", token, {
+  httpOnly: true,
+  secure: true, // keep true on Render (HTTPS)
+  sameSite: "strict"
+});
+
+
+//LOGOUT ROUT
+app.post("/logout" , (req, res) => {
+    res.clearCookies("token");
+    res.send("Logged out");
+});
+
+
+
+res.json({ message: "Login successful" });
 });
 
 

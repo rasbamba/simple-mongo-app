@@ -60,12 +60,12 @@ function login() {
   fetch("/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
+    credentials: "include" // ✅ REQUIRED
   })
   .then(res => res.json())
   .then(res => {
     if (res.token) {
-      localStorage.setItem("token", res.token);
       window.location.href = "/dashboard.html";
     } else {
       alert(res.message);
@@ -78,7 +78,8 @@ function login() {
 function loadUsers() {
   fetch("/users", {
     headers: {
-      Authorization: localStorage.getItem("token")
+      Authorization: localStorage.getItem("token"),
+      credentials: "include" // ✅ REQUIRED
     }
   })
   .then(res => res.json())
@@ -99,7 +100,8 @@ function loadUsers() {
 // DELETE USER
 function deleteUser(id) {
   fetch("/delete/" + id, {
-    method: "DELETE"
+    method: "DELETE",
+    credentials: "include" // ✅ REQUIRED
   })
   .then(res => res.text())
   .then(data => {
@@ -111,8 +113,13 @@ function deleteUser(id) {
 
 // LOGOUT
 function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "/";
+  fetch("/logout", {
+    method: "POST",
+    credentials: "include" // ✅ REQUIRED
+  })
+  .then(() => {
+    window.location.href = "/";
+  });
 }
 
 
@@ -126,7 +133,8 @@ function resetPassword() {
   fetch("/reset-password", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
+    credentials: "include" // ✅ REQUIRED
   })
   .then(res => res.text())
   .then(msg => {
@@ -141,6 +149,7 @@ function deleteAccount() {
 
   fetch("/delete-account", {
     method: "DELETE",
+    credentials: "include" ,// ✅ REQUIRED
     headers: {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("token")
