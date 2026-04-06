@@ -10,7 +10,7 @@ app.use(express.static("public"));
 const SECRET = "mysecretkey";
 
 // connect MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/testDB")
+mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
@@ -124,4 +124,5 @@ app.delete("/delete-account", auth, async (req, res) => {
 
 
 // 🚀 START SERVER
-app.listen(3000, () => console.log("http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Server running"));
