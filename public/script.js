@@ -1,4 +1,4 @@
-
+// ================= UI SWITCH =================
 function showLogin() {
   document.getElementById("login").style.display = "block";
   document.getElementById("signup").style.display = "none";
@@ -17,59 +17,36 @@ function showReset() {
   document.getElementById("signup").style.display = "none";
 }
 
-// CREATE USER
-function send() {
 
+// ================= SIGNUP =================
+function send() {
   const name = document.getElementById("name").value;
   const age = document.getElementById("age").value;
   const email = document.getElementById("email").value;
   const pswd = document.getElementById("pswd").value;
 
-  // ✅ VALIDATION
   if (!name || !email || !pswd) {
     return alert("Please fill all fields");
   }
 
-  // ✅ FETCH
   fetch("/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, age, email, pswd })
   })
-  .then(res => res.text())
   .then(res => res.json())
-.then(res => {
-  document.getElementById("msg").innerText = res.message;
+  .then(res => {
+    document.getElementById("msg").innerText = res.message;
 
-  if (res.message === "Saved securely") {
-    alert("Signup successful! Please login.");
-
-    showLogin();
-  }
-});
-}
-
-  // only runs if validation passes
-  fetch("/add", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name,
-      age,
-      email,
-      pswd
-    })
-  })
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById("msg").innerText = data;
-    loadUsers();
+    if (res.message === "Saved securely") {
+      alert("Signup successful! Please login.");
+      showLogin();
+    }
   });
 }
 
 
-
-// LOGIN (JWT version ONLY)
+// ================= LOGIN =================
 function login() {
   const data = {
     email: document.getElementById("loginEmail").value,
@@ -80,11 +57,11 @@ function login() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
-    credentials: "include" // ✅ REQUIRED
+    credentials: "include"
   })
   .then(res => res.json())
   .then(res => {
-    if (res.token) {
+    if (res.message === "Login successful") {
       window.location.href = "/dashboard.html";
     } else {
       alert(res.message);
@@ -93,13 +70,10 @@ function login() {
 }
 
 
-// LOAD USERS (protected)
+// ================= LOAD USERS =================
 function loadUsers() {
   fetch("/users", {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-      credentials: "include" // ✅ REQUIRED
-    }
+    credentials: "include"
   })
   .then(res => res.json())
   .then(data => {
@@ -109,18 +83,17 @@ function loadUsers() {
     data.forEach(user => {
       const li = document.createElement("li");
       li.innerText = user.name + " | " + user.email;
-
       list.appendChild(li);
     });
   });
 }
 
 
-// DELETE USER
+// ================= DELETE USER =================
 function deleteUser(id) {
   fetch("/delete/" + id, {
     method: "DELETE",
-    credentials: "include" // ✅ REQUIRED
+    credentials: "include"
   })
   .then(res => res.text())
   .then(data => {
@@ -130,11 +103,11 @@ function deleteUser(id) {
 }
 
 
-// LOGOUT
+// ================= LOGOUT =================
 function logout() {
   fetch("/logout", {
     method: "POST",
-    credentials: "include" // ✅ REQUIRED
+    credentials: "include"
   })
   .then(() => {
     window.location.href = "/";
@@ -142,7 +115,7 @@ function logout() {
 }
 
 
-// PASSWORD RESET
+// ================= RESET PASSWORD =================
 function resetPassword() {
   const data = {
     email: document.getElementById("resetEmail").value,
@@ -152,33 +125,24 @@ function resetPassword() {
   fetch("/reset-password", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    credentials: "include" // ✅ REQUIRED
+    body: JSON.stringify(data)
   })
   .then(res => res.text())
-  .then(msg => {
-    alert(msg);
-  });
+  .then(msg => alert(msg));
 }
 
 
-// DELETE ACCOUNT (JWT secure)
+// ================= DELETE ACCOUNT =================
 function deleteAccount() {
   if (!confirm("Are you sure?")) return;
 
   fetch("/delete-account", {
     method: "DELETE",
-    credentials: "include" ,// ✅ REQUIRED
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: localStorage.getItem("token")
-    }
+    credentials: "include"
   })
   .then(res => res.text())
   .then(msg => {
     alert(msg);
-
-    localStorage.removeItem("token");
     window.location.href = "/";
   });
 }
