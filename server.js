@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const app = express();
@@ -22,6 +22,7 @@ const User = mongoose.model("User", {
   email: { type: String, unique: true },
   pswd: String
 });
+
 
 
 // 🔐 AUTH MIDDLEWARE (define BEFORE using)
