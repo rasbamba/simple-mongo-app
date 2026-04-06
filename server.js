@@ -63,7 +63,7 @@ app.post("/add", async (req, res) => {
     });
 
     await user.save();
-    res.send("Saved securely!");
+    res.json({ message: "Saved securely" });
   } catch (err) {
     res.send("Error saving user");
   }

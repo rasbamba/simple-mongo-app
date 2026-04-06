@@ -37,22 +37,16 @@ function send() {
     body: JSON.stringify({ name, age, email, pswd })
   })
   .then(res => res.text())
-  .then(data => {
-    document.getElementById("msg").innerText = data;
+  .then(res => res.json())
+.then(res => {
+  document.getElementById("msg").innerText = res.message;
 
-    if (data.includes("Saved")) {
-      alert("Signup successful! Please login.");
+  if (res.message === "Saved securely") {
+    alert("Signup successful! Please login.");
 
-      // clear fields
-      document.getElementById("name").value = "";
-      document.getElementById("age").value = "";
-      document.getElementById("pswd").value = "";
-      document.getElementById("email").value = "";
-
-      // switch to login
-      showLogin();
-    }
-  });
+    showLogin();
+  }
+});
 }
 
   // only runs if validation passes
