@@ -1,118 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Auth App</title>
+  <title>Social App</title>
 
   <style>
     body {
-      font-family: Arial;
-      background: linear-gradient(to right, #4facfe, #00f2fe);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
+      font-family: Arial;
+      background: #e9f5ec;
     }
 
-    .card {
+    /* NAVBAR */
+    .navbar {
+      background: #2ecc71;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 25%;
+      padding: 20px;
+    }
+
+    .profile-card {
       background: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 320px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 15px;
+      border-radius: 10px;
       text-align: center;
     }
 
-    h2 {
-      margin-bottom: 20px;
+    .profile-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
     }
 
-    input {
+    /* FEED */
+    .feed {
+      width: 50%;
+      padding: 20px;
+    }
+
+    .post-box {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .post {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    textarea {
       width: 100%;
       padding: 10px;
-      margin: 8px 0;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
     }
 
     button {
-      width: 100%;
-      padding: 10px;
       margin-top: 10px;
+      padding: 8px 12px;
       border: none;
-      border-radius: 6px;
-      background: #007bff;
+      background: #2ecc71;
       color: white;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    .switch {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #555;
+      border-radius: 5px;
       cursor: pointer;
     }
 
-    .switch:hover {
-      text-decoration: underline;
+    /* CHAT */
+    .chat {
+      width: 25%;
+      padding: 20px;
     }
 
-    #login, #signup, #reset {
-      display: none;
+    .chat-box {
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      height: 300px;
+      overflow-y: auto;
     }
+
+    .message {
+      margin: 5px 0;
+      padding: 5px;
+      background: #d4efdf;
+      border-radius: 5px;
+    }
+
   </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="navbar">
+  <span>🌿 MySocial</span>
+  <button onclick="logout()">Logout</button>
+</div>
 
-  <!-- LOGIN -->
-  <div id="login">
-    <h2>Login</h2>
-    <input id="loginEmail" placeholder="Email">
-    <input id="loginPswd" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+<div class="container">
 
-    <p class="switch" onclick="showSignup()">Create account</p>
-    <p class="switch" onclick="showReset()">Forgot password?</p>
+  <!-- PROFILE -->
+  <div class="sidebar">
+    <div class="profile-card">
+      <img src="https://via.placeholder.com/80">
+      <h3 id="username">User</h3>
+    </div>
   </div>
 
-  <!-- SIGNUP -->
-  <div id="signup">
-    <h2>Sign Up</h2>
-    <input id="name" placeholder="Name">
-    <input id="age" placeholder="Age">
-    <input id="email" placeholder="Email">
-    <input id="pswd" type="password" placeholder="Password">
-    <button onclick="send()">Register</button>
+  <!-- FEED -->
+  <div class="feed">
 
-    <p class="switch" onclick="showLogin()">Already have account?</p>
+    <div class="post-box">
+      <textarea id="postText" placeholder="What's on your mind?"></textarea>
+      <button onclick="createPost()">Post</button>
+    </div>
+
+    <div id="posts"></div>
+
   </div>
 
-  <!-- RESET -->
-  <div id="reset">
-    <h2>Reset Password</h2>
-    <input id="resetEmail" placeholder="Email">
-    <input id="newPassword" type="password" placeholder="New Password">
-    <button onclick="resetPassword()">Reset</button>
+  <!-- CHAT -->
+  <div class="chat">
+    <div class="chat-box" id="chatBox"></div>
 
-    <p class="switch" onclick="showLogin()">Back to login</p>
+    <input id="msgInput" placeholder="Type message">
+    <button onclick="sendMessage()">Send</button>
   </div>
 
 </div>
 
 <script src="script.js"></script>
-
-<script>
-  // default screen
-  showLogin();
-</script>
 
 </body>
 </html>
