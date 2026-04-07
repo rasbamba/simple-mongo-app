@@ -1,145 +1,150 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <title>MySocial</title>
 
   <style>
     body {
-      font-family: Arial;
-      background: #f2f2f2;
       margin: 0;
-      padding: 0;
+      font-family: Arial;
+      background: #e9f5ec;
     }
 
+    /* NAVBAR */
     .navbar {
-      background: #007bff;
+      background: #2ecc71;
       color: white;
       padding: 15px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar button {
+      background: white;
+      color: #2ecc71;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
     .container {
       display: flex;
-      justify-content: center;
-      margin-top: 50px;
     }
 
-    .card {
+    /* SIDEBAR */
+    .sidebar {
+      width: 25%;
+      padding: 20px;
+    }
+
+    .profile-card {
       background: white;
-      padding: 30px;
+      padding: 20px;
       border-radius: 10px;
-      width: 350px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    h2 {
+    .profile-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+
+    /* FEED */
+    .feed {
+      width: 50%;
+      padding: 20px;
+    }
+
+    .post-box {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .post {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
       margin-bottom: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
 
-    button {
+    textarea {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
-      border: none;
       border-radius: 5px;
-      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+
+    button.post-btn {
+      margin-top: 10px;
+      background: #2ecc71;
       color: white;
     }
 
-    .logout {
-      background: #28a745;
+    /* CHAT */
+    .chat {
+      width: 25%;
+      padding: 20px;
     }
 
-    .logout:hover {
-      background: #218838;
+    .chat-box {
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 10px;
     }
 
-    .delete {
-      background: #dc3545;
-    }
-
-    .delete:hover {
-      background: #c82333;
+    .message {
+      margin: 5px 0;
+      padding: 8px;
+      background: #d4efdf;
+      border-radius: 5px;
     }
   </style>
 </head>
 
 <body>
 
+<!-- NAVBAR -->
 <div class="navbar">
-  <span>Dashboard</span>
+  <span>🌿 MySocial</span>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
-  <div class="card">
 
-    <h2>Welcome 👋</h2>
-    <p id="welcome"></p>
+  <!-- PROFILE -->
+  <div class="sidebar">
+    <div class="profile-card">
+      <img src="https://via.placeholder.com/80">
+      <h3 id="username">User</h3>
+    </div>
+  </div>
 
-    <button class="logout" onclick="logout()">Logout</button>
-    <button class="delete" onclick="deleteAccount()">Delete Account</button>
+  <!-- FEED -->
+  <div class="feed">
+
+    <div class="post-box">
+      <textarea id="postText" placeholder="What's on your mind?"></textarea>
+      <button class="post-btn" onclick="createPost()">Post</button>
+    </div>
+
+    <div id="posts"></div>
 
   </div>
-</div>
 
+  <!-- CHAT -->
+  <div class="chat">
+    <div class="chat-box" id="chatBox"></div>
 
-
-<script>
-//Dashboard Welcome
-
-fetch("/users", {
-  credentials: "include"
-})
-.then(res => res.json())
-.then(data => {
-  document.getElementById("welcome").innerText =
-    "Welcome " + data[0].email;
-});
-
-// ✅ PROTECT DASHBOARD
-fetch("/users", {
-  credentials: "include"
-})
-.then(res => {
-  if (res.status === 401) {
-    window.location.href = "/";
-  } else {
-    document.getElementById("welcome").innerText =
-      "You are logged in successfully!";
-  }
-});
-
-
-// ✅ LOGOUT (cookie-based)
-function logout() {
-  fetch("/logout", {
-    method: "POST",
-    credentials: "include"
-  })
-  .then(() => {
-    window.location.href = "/";
-  });
-}
-
-
-// ✅ DELETE ACCOUNT (cookie-based)
-function deleteAccount() {
-  if (!confirm("Are you sure?")) return;
-
-  fetch("/delete-account", {
-    method: "DELETE",
-    credentials: "include"
-  })
-  .then(res => res.text())
-  .then(msg => {
-    alert(msg);
-    window.location.href = "/";
-  });
-}
-
-</script>
-
-</body>
-</html>
+    <input id="msgInput" placeholder="Type message">
+    <button onclick="sendMessage()">Send</button>
