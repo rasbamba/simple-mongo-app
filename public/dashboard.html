@@ -84,40 +84,51 @@
   </div>
 </div>
 
+
+
 <script>
-const token = localStorage.getItem("token");
 
-// protect page
-if (!token) {
-  window.location.href = "/";
-} else {
-  document.getElementById("welcome").innerText =
-    "You are logged in successfully!";
-}
+// ✅ PROTECT DASHBOARD
+fetch("/users", {
+  credentials: "include"
+})
+.then(res => {
+  if (res.status === 401) {
+    window.location.href = "/";
+  } else {
+    document.getElementById("welcome").innerText =
+      "You are logged in successfully!";
+  }
+});
 
-// logout
+
+// ✅ LOGOUT (cookie-based)
 function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "/";
+  fetch("/logout", {
+    method: "POST",
+    credentials: "include"
+  })
+  .then(() => {
+    window.location.href = "/";
+  });
 }
 
-// delete account
+
+// ✅ DELETE ACCOUNT (cookie-based)
 function deleteAccount() {
   if (!confirm("Are you sure?")) return;
 
   fetch("/delete-account", {
     method: "DELETE",
-    headers: {
-      Authorization: localStorage.getItem("token")
-    }
+    credentials: "include"
   })
   .then(res => res.text())
   .then(msg => {
     alert(msg);
-    localStorage.removeItem("token");
     window.location.href = "/";
   });
 }
+
 </script>
 
 </body>
