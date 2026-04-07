@@ -70,6 +70,19 @@ function login() {
 }
 
 
+// ================= POSTS =================
+function createPost() {
+  const text = document.getElementById("postText").value;
+
+  const post = document.createElement("div");
+  post.className = "post";
+  post.innerText = text;
+
+  document.getElementById("posts").prepend(post);
+
+  document.getElementById("postText").value = "";
+}
+
 // ================= LOAD USERS =================
 function loadUsers() {
   fetch("/users", {
