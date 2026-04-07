@@ -87,6 +87,16 @@
 
 
 <script>
+//Dashboard Welcome
+
+fetch("/users", {
+  credentials: "include"
+})
+.then(res => res.json())
+.then(data => {
+  document.getElementById("welcome").innerText =
+    "Welcome " + data[0].email;
+});
 
 // ✅ PROTECT DASHBOARD
 fetch("/users", {
