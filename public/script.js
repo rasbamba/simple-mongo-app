@@ -70,64 +70,6 @@ function login() {
 }
 
 
-// ================= POSTS =================
-function createPost() {
-  const text = document.getElementById("postText").value;
-
-  const post = document.createElement("div");
-  post.className = "post";
-  post.innerText = text;
-
-  document.getElementById("posts").prepend(post);
-
-  document.getElementById("postText").value = "";
-}
-
-// ================= LOAD USERS =================
-function loadUsers() {
-  fetch("/users", {
-    credentials: "include"
-  })
-  .then(res => res.json())
-  .then(data => {
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-
-    data.forEach(user => {
-      const li = document.createElement("li");
-      li.innerText = user.name + " | " + user.email;
-      list.appendChild(li);
-    });
-  });
-}
-
-// EDIT PROGILE
-function sendMessage() {
-  const msg = document.getElementById("msgInput").value;
-
-  const div = document.createElement("div");
-  div.className = "message";
-  div.innerText = msg;
-
-  document.getElementById("chatBox").appendChild(div);
-
-  document.getElementById("msgInput").value = "";
-}
-
-// ================= DELETE USER =================
-function deleteUser(id) {
-  fetch("/delete/" + id, {
-    method: "DELETE",
-    credentials: "include"
-  })
-  .then(res => res.text())
-  .then(data => {
-    alert(data);
-    loadUsers();
-  });
-}
-
-
 // ================= LOGOUT =================
 function logout() {
   fetch("/logout", {
@@ -172,7 +114,8 @@ function deleteAccount() {
   });
 }
 
-// ================= POSTS =================
+
+// ================= POSTS (SOCIAL FEATURE) =================
 function createPost() {
   const text = document.getElementById("postText").value;
 
@@ -185,4 +128,20 @@ function createPost() {
   document.getElementById("posts").prepend(post);
 
   document.getElementById("postText").value = "";
+}
+
+
+// ================= CHAT (BASIC UI) =================
+function sendMessage() {
+  const msg = document.getElementById("msgInput").value;
+
+  if (!msg) return;
+
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerText = msg;
+
+  document.getElementById("chatBox").appendChild(div);
+
+  document.getElementById("msgInput").value = "";
 }
