@@ -101,6 +101,18 @@ function loadUsers() {
   });
 }
 
+// EDIT PROGILE
+function sendMessage() {
+  const msg = document.getElementById("msgInput").value;
+
+  const div = document.createElement("div");
+  div.className = "message";
+  div.innerText = msg;
+
+  document.getElementById("chatBox").appendChild(div);
+
+  document.getElementById("msgInput").value = "";
+}
 
 // ================= DELETE USER =================
 function deleteUser(id) {
