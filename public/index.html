@@ -1,62 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>User App</title>
+  <title>Auth App</title>
 
   <style>
     body {
       font-family: Arial;
-      background: #f2f2f2;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
 
-    .container {
+    .card {
       background: white;
       padding: 30px;
-      border-radius: 10px;
-      width: 300px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       text-align: center;
     }
 
-    h1 {
+    h2 {
       margin-bottom: 20px;
     }
 
     input {
-      width: 90%;
+      width: 100%;
       padding: 10px;
       margin: 8px 0;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 6px;
     }
 
     button {
-      width: 95%;
+      width: 100%;
       padding: 10px;
       margin-top: 10px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       background: #007bff;
       color: white;
       cursor: pointer;
+      font-size: 14px;
     }
 
     button:hover {
       background: #0056b3;
     }
 
-    .link {
-      color: blue;
-      cursor: pointer;
+    .switch {
       margin-top: 10px;
-      display: block;
+      font-size: 13px;
+      color: #555;
+      cursor: pointer;
     }
 
-    .hidden {
+    .switch:hover {
+      text-decoration: underline;
+    }
+
+    #login, #signup, #reset {
       display: none;
     }
   </style>
@@ -64,47 +70,49 @@
 
 <body>
 
-<div class="container">
+<div class="card">
 
-  <h1>User App</h1>
+  <!-- LOGIN -->
+  <div id="login">
+    <h2>Login</h2>
+    <input id="loginEmail" placeholder="Email">
+    <input id="loginPswd" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
 
-  <!-- MENU -->
-  <button onclick="showLogin()">Login</button>
-  <button onclick="showSignup()">Sign Up</button>
+    <p class="switch" onclick="showSignup()">Create account</p>
+    <p class="switch" onclick="showReset()">Forgot password?</p>
+  </div>
 
   <!-- SIGNUP -->
-  <div id="signup" class="hidden">
-    <h3>Sign Up</h3>
+  <div id="signup">
+    <h2>Sign Up</h2>
     <input id="name" placeholder="Name">
     <input id="age" placeholder="Age">
     <input id="email" placeholder="Email">
     <input id="pswd" type="password" placeholder="Password">
     <button onclick="send()">Register</button>
-  </div>
 
-  <!-- LOGIN -->
-  <div id="login" class="hidden">
-    <h3>Login</h3>
-    <input id="loginEmail" placeholder="Email">
-    <input id="loginPswd" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-
-    <span class="link" onclick="showReset()">Forgot Password?</span>
+    <p class="switch" onclick="showLogin()">Already have account?</p>
   </div>
 
   <!-- RESET -->
-  <div id="reset" class="hidden">
-    <h3>Reset Password</h3>
+  <div id="reset">
+    <h2>Reset Password</h2>
     <input id="resetEmail" placeholder="Email">
     <input id="newPassword" type="password" placeholder="New Password">
     <button onclick="resetPassword()">Reset</button>
-  </div>
 
-  <p id="msg"></p>
+    <p class="switch" onclick="showLogin()">Back to login</p>
+  </div>
 
 </div>
 
 <script src="script.js"></script>
+
+<script>
+  // default screen
+  showLogin();
+</script>
 
 </body>
 </html>
